@@ -1,0 +1,194 @@
+[
+    {
+        "pk": 1,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "A",
+            "name": "Azuay"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "B",
+            "name": "Bolívar"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "F",
+            "name": "Cañar"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "C",
+            "name": "Carchi"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "H",
+            "name": "Chimborazo"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "X",
+            "name": "Cotopaxi"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "O",
+            "name": "El Oro"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "E",
+            "name": "Esmeraldas"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "W",
+            "name": "Galápagos"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "G",
+            "name": "Guayas"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "I",
+            "name": "Imbabura"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "L",
+            "name": "Loja"
+        }
+    },
+    {
+        "pk": 13,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "R",
+            "name": "Los Ríos"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "M",
+            "name": "Manabí"
+        }
+    },
+    {
+        "pk": 15,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "S",
+            "name": "Morona Santiago"
+        }
+    },
+    {
+        "pk": 16,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "N",
+            "name": "Napo"
+        }
+    },
+    {
+        "pk": 17,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "D",
+            "name": "Orellana"
+        }
+    },
+    {
+        "pk": 18,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "Y",
+            "name": "Pastaza"
+        }
+    },
+    {
+        "pk": 19,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "P",
+            "name": "Pichincha"
+        }
+    },
+    {
+        "pk": 20,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "SE",
+            "name": "Santa Elena"
+        }
+    },
+    {
+        "pk": 21,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "SD",
+            "name": "Santo Domingo"
+        }
+    },
+    {
+        "pk": 22,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "U",
+            "name": "Sucumbíos"
+        }
+    },
+    {
+        "pk": 23,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "T",
+            "name": "Tungurahua"
+        }
+    },
+    {
+        "pk": 24,
+        "model": "address.province", 
+        "fields": {
+            "iso_3166_2": "Z",
+            "name": "Zamora Chinchipe"
+        }
+    }
+]
