@@ -25,8 +25,23 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'manager'
+
+    # External
+    'rest_framework',
+
+    # Core and Utils
+    'core',
+
+    # Apps
+    'apps.address',
+    'apps.analytics',
+    'apps.catalogue',
+    'apps.customer',
 ]
+
+
+AUTH_USER_MODEL = 'customer.User'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
