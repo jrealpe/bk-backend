@@ -4,4 +4,4 @@ from .models import Product, Coupon
 
 
 admin.site.register(Product)
-#admin.site.register(Cupon)
+admin.site.register(Coupon)
