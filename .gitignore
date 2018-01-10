@@ -11,3 +11,6 @@ static
 
 ### Enviroment ###
 env/
+myvenv/
+.idea/
+.vscode/
