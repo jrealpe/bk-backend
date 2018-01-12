@@ -6,11 +6,14 @@ from django.conf.urls.static import static
 
 from apps.catalogue import urls as catalogue_urls
 
+from .views import index
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-
-    # API
+    url(r'^index/', index, name='index'),
+    url(r'^$/', index, name='index'),
+    url(r'^$', index, name='index'),
+	# API
     url(r'^api/catalogue', include(catalogue_urls)),
 ]
 
