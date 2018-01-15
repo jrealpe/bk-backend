@@ -9,11 +9,11 @@ from apps.catalogue import urls as catalogue_urls
 from .views import index
 
 urlpatterns = [
+    #url(r'^grappelli/', include('grappelli.urls')),  # Django JET URLS
+    #url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/', admin.site.urls),
-    url(r'^index/', index, name='index'),
-    url(r'^$/', index, name='index'),
-    url(r'^$', index, name='index'),
-	# API
+    url(r'^', index, name='index'),
+    # API
     url(r'^api/catalogue', include(catalogue_urls)),
 ]
 
