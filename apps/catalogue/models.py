@@ -1,4 +1,5 @@
 from django.db import models
+import django.utils.timezone
 
 from core.models import BaseModel
 
@@ -39,6 +40,10 @@ class Coupon(models.Model):
     title = models.CharField('Titulo', max_length=200)
     description = models.TextField('Descripcion', blank=True)
     image = models.ImageField('Imagen', upload_to='coupons')
+    valid_until = models.DateTimeField(
+        default=django.utils.timezone.now,
+        blank=True,
+        verbose_name='Fecha de fin de Vigencia')
 
     class Meta:
         verbose_name = 'Cupon'

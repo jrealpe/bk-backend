@@ -6,13 +6,13 @@ from django.conf.urls.static import static
 
 from apps.catalogue import urls as catalogue_urls
 
-from .views import index
+from .views import index, SignOutView
 
 urlpatterns = [
-    #url(r'^grappelli/', include('grappelli.urls')),  # Django JET URLS
-    #url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^', index, name='index'),
+    url(r'^incia-sesion/$', index, name='index'),
+    url(r'^cerrar-sesion/$', SignOutView.as_view(), name='sign_out'),
     # API
     url(r'^api/catalogue', include(catalogue_urls)),
 ]

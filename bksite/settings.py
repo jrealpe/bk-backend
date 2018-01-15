@@ -134,7 +134,7 @@ STATICFILES_DIRS = [
 # Example: "/var/www/example.com/media/"
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Admin name that will appear in header <title> tags and in footer
@@ -148,6 +148,10 @@ SUIT_CONFIG = {
         'auth': 'icon-lock',
     }
 }
+
+LOGIN_URL = '/inicia-sesion/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Local Settings
 
