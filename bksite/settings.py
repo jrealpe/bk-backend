@@ -19,7 +19,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -37,6 +36,11 @@ INSTALLED_APPS = [
     'apps.analytics',
     'apps.catalogue',
     'apps.customer',
+
+    # Material
+    'material',
+    'material.admin',
+    'django.contrib.admin',
 ]
 
 
@@ -58,7 +62,9 @@ ROOT_URLCONF = 'bksite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
