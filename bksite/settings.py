@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'apps.customer',
 
     # Material
+    'material.theme.lightblue',
     'material',
     'material.admin',
     'django.contrib.admin',
@@ -131,7 +132,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
-
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.CachedStaticFilesStorage'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"

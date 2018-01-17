@@ -2,11 +2,11 @@ Django==1.11
 django-lint==2.0.4
 django-material==1.1.1
 djangorestframework==3.7.7
-logilab-astng==0.24.3
+#logilab-astng==0.24.3
 logilab-common==1.4.1
 Pillow==5.0.0
 psycopg2==2.7.3.2
-pylint==0.28.0
+#pylint==0.28.0
 pytz==2017.3
 six==1.11.0
 pylint==1.8.1
