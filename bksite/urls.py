@@ -11,7 +11,7 @@ from .views import index, SignOutView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', index, name='index'),
+    url(r'^$', index, name='index'),
     url(r'^incia-sesion/$', index, name='index'),
     url(r'^cerrar-sesion/$', SignOutView.as_view(), name='sign_out'),
 

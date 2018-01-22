@@ -27,6 +27,7 @@ INSTALLED_APPS = [
         
     # External
     'rest_framework',
+    'sorl.thumbnail',
 
     # Core and Utils
     'core',

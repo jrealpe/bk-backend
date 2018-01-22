@@ -27,14 +27,6 @@ class Product(BaseModel):
         null=True
     )
     image = models.ImageField('Imagen', upload_to='products')
-    updated = models.DateTimeField(auto_now=True, auto_now_add=False,
-        verbose_name='Actuaizado',
-        blank=True,
-        null=True)
-    timestamp = models.DateTimeField(auto_now=False, auto_now_add=True,
-        verbose_name='Publicado',
-        blank=True,
-        null=True)
 
     class Meta:
         verbose_name = 'Producto'
@@ -44,22 +36,11 @@ class Product(BaseModel):
         return self.title
 
 
-class Coupon(models.Model):
+class Coupon(BaseModel):
     title = models.CharField('Titulo', max_length=200)
     description = models.TextField('Descripcion', blank=True)
     image = models.ImageField('Imagen', upload_to='coupons')
-    valid_until = models.DateTimeField(
-        default=django.utils.timezone.now,
-        blank=True,
-        verbose_name='Fecha de fin de Vigencia')
-    updated = models.DateTimeField(auto_now=True, auto_now_add=False,
-        verbose_name='Actuaizado',
-        blank=True,
-        null=True)
-    timestamp = models.DateTimeField(auto_now=False, auto_now_add=True,
-        verbose_name='Publicado',
-        blank=True,
-        null=True)
+    date_expiry = models.DateTimeField('Fecha de Expiracion')
 
     class Meta:
         verbose_name = 'Cupon'
@@ -67,4 +48,3 @@ class Coupon(models.Model):
 
     def __str__(self):
         return self.title
-
