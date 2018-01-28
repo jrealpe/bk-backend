@@ -1,11 +1,12 @@
 from django.db import models
+from datetime import date
 import django.utils.timezone
 
 from core.models import BaseModel
 
 
 class Category(models.Model):
-    name = models.CharField('Nombre', max_length=200)
+    name = models.CharField('Nombre', max_length=50)
 
     class Meta:
         ordering = ['name']
@@ -17,8 +18,8 @@ class Category(models.Model):
 
 
 class Product(BaseModel):
-    title = models.CharField('Titulo', max_length=200)
-    description = models.TextField('Descripcion')
+    title = models.CharField('Titulo', max_length=60)
+    description = models.TextField('Descripcion', max_length=150)
     category = models.ForeignKey(
         'Category',
         verbose_name='Categoria',
@@ -37,8 +38,8 @@ class Product(BaseModel):
 
 
 class Coupon(BaseModel):
-    title = models.CharField('Titulo', max_length=200)
-    description = models.TextField('Descripcion', blank=True)
+    title = models.CharField('Titulo', max_length=60)
+    description = models.TextField('Descripcion', max_length=150, blank=True)
     image = models.ImageField('Imagen', upload_to='coupons')
     date_expiry = models.DateTimeField('Fecha de Expiracion')
 
@@ -48,3 +49,7 @@ class Coupon(BaseModel):
 
     def __str__(self):
         return self.title
+
+    @property
+    def is_past_due(self):
+        return date.today > self.date_expiry
