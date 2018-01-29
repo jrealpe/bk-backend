@@ -1,11 +1,13 @@
 from django.db import models
-import django.utils.timezone
+from django.utils import timezone
 
 from core.models import BaseModel
 
+from .validators import date_validator
 
-class Category(models.Model):
-    name = models.CharField('Nombre', max_length=200)
+
+class Category(BaseModel):
+    name = models.CharField('Nombre', max_length=30)
 
     class Meta:
         ordering = ['name']
@@ -17,8 +19,8 @@ class Category(models.Model):
 
 
 class Product(BaseModel):
-    title = models.CharField('Titulo', max_length=200)
-    description = models.TextField('Descripcion')
+    title = models.CharField('Titulo', max_length=30)
+    description = models.TextField('Descripcion', max_length=50)
     category = models.ForeignKey(
         'Category',
         verbose_name='Categoria',
@@ -37,10 +39,11 @@ class Product(BaseModel):
 
 
 class Coupon(BaseModel):
-    title = models.CharField('Titulo', max_length=200)
-    description = models.TextField('Descripcion', blank=True)
+    title = models.CharField('Titulo', max_length=30)
+    description = models.TextField('Descripcion', blank=True, max_length=50)
     image = models.ImageField('Imagen', upload_to='coupons')
-    date_expiry = models.DateTimeField('Fecha de Expiracion')
+    date_expiry = models.DateTimeField('Fecha de Expiracion',
+        validators=[date_validator])
 
     class Meta:
         verbose_name = 'Cupon'

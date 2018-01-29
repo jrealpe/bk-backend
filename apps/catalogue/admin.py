@@ -7,15 +7,31 @@ from .models import Product, Coupon, Category
 
 @admin.register(Product)
 class ProductModelAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description', 'category', 'modified_at', 'created_at')
+    fieldsets = (
+        (None, {'fields': ('title', 'description', 'category')}),
+    )
+    list_display = ('title', 'description', 'category', 'modified_user',
+                    'created_user', 'modified_at', 'created_at')
     list_filter = ('category',)
     search_fields = ('title', 'description')
+
+    def save_model(self, request, obj, form, change):
+        user = request.user
+        if not obj.id:
+            obj.created_user = user
+        obj.modified_user = user
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(Coupon)
 class CouponModelAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description', 'get_image', 'modified_at', 'created_at')
+    fieldsets = (
+        (None, {'fields': ('title', 'description', 'date_expiry', 'image')}),
+    )
+    list_display = ('title', 'description', 'get_image', 'modified_user',
+                    'created_user', 'modified_at', 'created_at')
     search_fields = ('title', 'description')
+    readonly_fields = ('modified_at', 'created_at')
 
     def get_image(self, obj):
         img = ''
@@ -27,8 +43,26 @@ class CouponModelAdmin(admin.ModelAdmin):
     get_image.allow_tags = True
     get_image.short_description = 'Imagen'
 
+    def save_model(self, request, obj, form, change):
+        user = request.user
+        if not obj.id:
+            obj.created_user = user
+        obj.modified_user = user
+        super().save_model(request, obj, form, change)
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'name')
-    search_fields = ('name', 'category__name')
+    fieldsets = (
+        (None, {'fields': ('name',)}),
+    )
+    list_display = ('name','modified_user', 'created_user', 'modified_at',
+                    'created_at')
+    search_fields = ('name',)
+
+    def save_model(self, request, obj, form, change):
+        user = request.user
+        if not obj.id:
+            obj.created_user = user
+        obj.modified_user = user
+        super().save_model(request, obj, form, change)
