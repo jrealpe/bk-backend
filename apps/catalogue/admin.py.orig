@@ -7,11 +7,15 @@ from .models import Product, Coupon, Category
 
 @admin.register(Product)
 class ProductModelAdmin(admin.ModelAdmin):
+<<<<<<< HEAD
     fieldsets = (
         (None, {'fields': ('title', 'description', 'category')}),
     )
     list_display = ('title', 'description', 'category', 'modified_user',
                     'created_user', 'modified_at', 'created_at')
+=======
+    list_display = ('title', 'category', 'get_image', 'modified_at', 'created_at')
+>>>>>>> 5e0be216de73e724a824213c6d1988159303de5d
     list_filter = ('category',)
     search_fields = ('title', 'category')
 

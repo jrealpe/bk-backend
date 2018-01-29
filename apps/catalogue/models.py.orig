@@ -1,12 +1,23 @@
 from django.db import models
+<<<<<<< HEAD
+from django.utils import timezone
+=======
+from datetime import date
+import django.utils.timezone
+>>>>>>> 5e0be216de73e724a824213c6d1988159303de5d
 
 from core.models import BaseModel
 
 from .validators import date_validator
 
+<<<<<<< HEAD
 
 class Category(BaseModel):
     name = models.CharField('Nombre', max_length=30)
+=======
+class Category(models.Model):
+    name = models.CharField('Nombre', max_length=50)
+>>>>>>> 5e0be216de73e724a824213c6d1988159303de5d
 
     class Meta:
         ordering = ['name']
@@ -18,8 +29,13 @@ class Category(BaseModel):
 
 
 class Product(BaseModel):
+<<<<<<< HEAD
     title = models.CharField('Titulo', max_length=30)
     description = models.TextField('Descripcion', max_length=50)
+=======
+    title = models.CharField('Titulo', max_length=60)
+    description = models.TextField('Descripcion', max_length=150)
+>>>>>>> 5e0be216de73e724a824213c6d1988159303de5d
     category = models.ForeignKey(
         'Category',
         verbose_name='Categoria',
@@ -38,8 +54,13 @@ class Product(BaseModel):
 
 
 class Coupon(BaseModel):
+<<<<<<< HEAD
     title = models.CharField('Titulo', max_length=30)
     description = models.TextField('Descripcion', blank=True, max_length=50)
+=======
+    title = models.CharField('Titulo', max_length=60)
+    description = models.TextField('Descripcion', max_length=150, blank=True)
+>>>>>>> 5e0be216de73e724a824213c6d1988159303de5d
     image = models.ImageField('Imagen', upload_to='coupons')
     date_expiry = models.DateTimeField('Fecha de Expiracion',
         validators=[date_validator])
