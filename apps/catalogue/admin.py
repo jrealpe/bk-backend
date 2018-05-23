@@ -1,21 +1,26 @@
+'''
+To Manage the forms for produc, cotegory and promotion models.
+'''
 from django.contrib import admin
 
 from sorl.thumbnail import get_thumbnail
 
-from .models import Promotion, Product, Coupon, Category, Offer
+from .models import Product, Coupon, Category, Offer
 
 
 @admin.register(Product)
 class ProductModelAdmin(admin.ModelAdmin):
+    '''ModelAdmin of Product'''
     fieldsets = (
         (None, {'fields': ('title', 'description', 'image', 'category')}),
     )
-    list_display = ('title', 'description', 'category', 'modified_user',
+    list_display = ('title', 'description', 'get_image', 'modified_user',
                     'created_user', 'modified_at', 'created_at')
     list_filter = ('category',)
-    search_fields = ('title', 'category')
+    search_fields = ('title',)
 
     def get_image(self, obj):
+        '''Returns the image as thumbnail in the admin'''
         img = ''
         if obj.image:
             thumb = get_thumbnail(obj.image, '80x80')
@@ -35,10 +40,12 @@ class ProductModelAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    '''Registration of the Category Model'''
+
     fieldsets = (
         (None, {'fields': ('name',)}),
     )
-    list_display = ('name','modified_user', 'created_user', 'modified_at',
+    list_display = ('name', 'modified_user', 'created_user', 'modified_at',
                     'created_at')
     search_fields = ('name',)
 
@@ -50,8 +57,11 @@ class CategoryAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-#@admin.register(Promotion)
 class PromotionModelAdmin(admin.ModelAdmin):
+    '''
+    Promotion Model to be inherit by ModelAdmin of Coupon and Offer
+    '''
+
     fieldsets = (
         (None, {'fields': ('title', 'description', 'image')}),
     )
@@ -61,6 +71,7 @@ class PromotionModelAdmin(admin.ModelAdmin):
     readonly_fields = ('modified_at', 'created_at')
 
     def get_image(self, obj):
+        '''Returns the image as thumbnail in the admin'''
         img = ''
         if obj.image:
             thumb = get_thumbnail(obj.image, '80x80')
@@ -80,11 +91,15 @@ class PromotionModelAdmin(admin.ModelAdmin):
 
 @admin.register(Coupon)
 class CouponModelAdmin(PromotionModelAdmin):
+    '''Registration of the Coupon Model in AdminModel'''
+
     fieldsets = (
         (None, {'fields': ('title', 'description', 'date_expiry', 'image')}),
     )
-   
+
 
 @admin.register(Offer)
 class OfferModelAdmin(PromotionModelAdmin):
+    '''Registration of the Offer Model in AdminModel'''
+
     pass

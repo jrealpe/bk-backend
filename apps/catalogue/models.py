@@ -56,7 +56,7 @@ class Promotion(BaseModel):
     Model of any type of promotion: Coupon or Offter
     '''
     title = models.CharField('Titulo', max_length=30)
-    description = models.TextField('Descripcion', blank=True, max_length=100)
+    description = models.TextField('Descripcion', blank=True, max_length=60)
     image = models.ImageField('Imagen')
 
     class Meta:
