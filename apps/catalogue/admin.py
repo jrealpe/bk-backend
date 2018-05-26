@@ -63,7 +63,7 @@ class PromotionModelAdmin(admin.ModelAdmin):
     '''
 
     fieldsets = (
-        (None, {'fields': ('title', 'description', 'image')}),
+        (None, {'fields': ('title', 'description', 'date_expiry', 'image')}),
     )
     list_display = ('title', 'description', 'get_image', 'modified_user',
                     'created_user', 'modified_at', 'created_at')
@@ -92,12 +92,8 @@ class PromotionModelAdmin(admin.ModelAdmin):
 @admin.register(Coupon)
 class CouponModelAdmin(PromotionModelAdmin):
     '''Registration of the Coupon Model in AdminModel'''
-
-    fieldsets = (
-        (None, {'fields': ('title', 'description', 'date_expiry', 'image')}),
-    )
-
-
+    pass
+    
 @admin.register(Offer)
 class OfferModelAdmin(PromotionModelAdmin):
     '''Registration of the Offer Model in AdminModel'''

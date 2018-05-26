@@ -1,18 +1,11 @@
 '''
 Those are models of the application
 '''
-from datetime import datetime, timedelta
+from datetime import datetime
 from django.db import models
 from core.models import BaseModel
 
 from .validators import date_validator
-
-
-def timestap():
-    '''Return a timestap for the expiry dates'''
-    now = datetime.now()
-    start = now.replace(hour=18, minute=0, second=0, microsecond=0)
-    return start + timedelta(days=1)
 
 
 class Category(BaseModel):
@@ -32,13 +25,11 @@ class Category(BaseModel):
 class Product(BaseModel):
     '''Prodcuts'''
     title = models.CharField('Titulo', max_length=30)
-    description = models.TextField('Descripcion', max_length=100)
+    description = models.TextField('Descripcion', blank=True, max_length=60)
     category = models.ForeignKey(
         'Category',
         verbose_name='Categoria',
         on_delete=models.PROTECT,
-        blank=True,
-        null=True
     )
     image = models.ImageField('Imagen', upload_to='products')
 
@@ -57,10 +48,12 @@ class Promotion(BaseModel):
     '''
     title = models.CharField('Titulo', max_length=30)
     description = models.TextField('Descripcion', blank=True, max_length=60)
+    date_expiry = models.DateTimeField('Fecha de Expiracion',
+                                       validators=[date_validator])
     image = models.ImageField('Imagen')
 
     class Meta:
-        ''''Metadata for Promotions'''
+        ''''Defined class as abstract'''
         abstract = True
 
     def __str__(self):
@@ -69,8 +62,6 @@ class Promotion(BaseModel):
 
 class Coupon(Promotion):
     '''Promotion to 25 percent discount on products'''
-    date_expiry = models.DateTimeField('Fecha de Expiracion', default=timestap,
-                                       validators=[date_validator])
 
     class Meta:
         '''Metadata for Coupon'''
