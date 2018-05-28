@@ -1,3 +1,6 @@
+'''
+Se define las rutas
+'''
 from django.conf.urls import include, url
 
 from rest_framework import routers
@@ -11,5 +14,5 @@ router.register(r'coupons', CouponViewSet, base_name='coupon')
 router.register(r'offers', OfferViewSet, base_name='offer')
 
 urlpatterns = [
-	url(r'^/', include(router.urls)),
+    url(r'^/', include(router.urls)),
 ]
