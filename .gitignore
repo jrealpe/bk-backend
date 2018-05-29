@@ -8,6 +8,7 @@ local_settings.py
 db.sqlite3
 media
 #static
+remove_migrations.py
 
 ### Enviroment ###
 env/
