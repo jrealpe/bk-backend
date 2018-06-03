@@ -17,6 +17,8 @@ urlpatterns = [
 
     # API
     url(r'^api/catalogue', include(catalogue_urls)),
+
+    #url(r'^api/catalogue', include(catalogue_urls))
 ]
 
 if settings.DEBUG:

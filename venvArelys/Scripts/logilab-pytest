@@ -1,0 +1,7 @@
+#!c:\users\vazhley\desktop\proyectosoft\bk-backend\venvarelys\scripts\python3.exe
+
+import warnings
+warnings.simplefilter('default', DeprecationWarning)
+
+from logilab.common.pytest import run
+run()

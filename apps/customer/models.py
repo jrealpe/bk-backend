@@ -10,7 +10,7 @@ from core.models import BaseModel
 
 class User(AbstractUser):
     identification = models.CharField('Identificación', max_length=13)
-    phone = models.CharField('Teléfono de trabajo', max_length=10)
+    phone = models.CharField('Teléfono de trabajo', blank=True, max_length=10)
     province = models.ForeignKey(
         'address.Province',
         verbose_name='Provincia',
