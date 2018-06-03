@@ -59,6 +59,11 @@ class Promotion(BaseModel):
     def __str__(self):
         return self.title
 
+    @property
+    def is_past_due(self):
+        '''Return true when date is past due'''
+        return datetime.now() < self.date_expiry
+
 
 class Coupon(Promotion):
     '''Promotion to 25 percent discount on products'''
@@ -67,11 +72,6 @@ class Coupon(Promotion):
         '''Metadata for Coupon'''
         verbose_name = 'Cupon'
         verbose_name_plural = 'Cupones'
-
-    @property
-    def is_past_due(self):
-        '''Return true when date is past due'''
-        return datetime.now > self.date_expiry
 
 
 class Offer(Promotion):
