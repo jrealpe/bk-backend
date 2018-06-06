@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     # Auth
+    url(r'^api/login/', CustomObtainAuthToken.as_view()),
     url(r'^api/signup/', customer_views.sign_up),
 
     # API
