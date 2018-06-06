@@ -9,8 +9,10 @@ from core.models import BaseModel
 ########
 
 class User(AbstractUser):
-    identification = models.CharField('Identificación', max_length=13)
-    phone = models.CharField('Teléfono de trabajo', max_length=10)
+    identification = models.CharField('Identificación', max_length=13,
+                                      blank=True)
+    phone = models.CharField('Teléfono de trabajo', max_length=10,
+                             blank=True)
     province = models.ForeignKey(
         'address.Province',
         verbose_name='Provincia',
@@ -25,6 +27,7 @@ class User(AbstractUser):
         blank=True,
         null=True
     )
+    sector = models.CharField('Sector', max_length=20, blank=True)
 
     class Meta:
         verbose_name = 'Usuario'

@@ -29,6 +29,7 @@ INSTALLED_APPS = [
         
     # External
     'rest_framework',
+    'rest_framework.authtoken',
     'sorl.thumbnail',
 
     # Core and Utils
@@ -45,6 +46,9 @@ INSTALLED_APPS = [
     'material',
     'material.admin',
     'django.contrib.admin',
+
+    # FCM
+    'fcm_django',
 ]
 
 
@@ -148,9 +152,18 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-LOGIN_URL = '/inicia-sesion/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+# Rest Framework
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+}
+
 
 # Local Settings
 
