@@ -1,4 +1,5 @@
 '''
+
 ViewSwts for Catalogue's Offers, Coupons and Products
 '''
 from rest_framework import viewsets
@@ -10,12 +11,14 @@ from apps.catalogue.serializers import ProductSerializer, CouponSerializer, Offe
 
 class ProductViewSet(viewsets.ViewSet):
     '''
-    A ViewSet for listing products
+    A ViewSet for listing products by category's name
     '''
     def get_products(self, pk):
         queryset = Product.objects.all().filter(category=pk)
-        serializer_class = ProductSerializer(queryset, many=True)
-        return serializer_class.data
+        if queryset:      # category without products
+            serializer_class = ProductSerializer(queryset, many=True)
+            return serializer_class.data
+        return None
 
     def list(self, request):
         queryset_category = Category.objects.all()
@@ -23,14 +26,17 @@ class ProductViewSet(viewsets.ViewSet):
         queryset = []
         for category in queryset_category:
             serializer_product = self.get_products(category.id)
-            queryset_filter[category.name] = serializer_product
-            queryset.append(queryset_filter) 
-        return Response(queryset[0])
+            if serializer_product is not None:
+                queryset_filter['data'] = serializer_product
+                queryset_filter['name'] = category.name
+                queryset.append(queryset_filter)
+                queryset_filter = {}      # empty dictionary for new data
+        return Response(queryset)
 
 
 class CouponViewSet(viewsets.ViewSet):
     '''
-    A ViewSet for listing coupons
+    A ViewSet for listing coupons wich aren't past due
     '''
     def list(self, request):
         '''Returns serialized class response from Coupon'''
@@ -45,7 +51,7 @@ class CouponViewSet(viewsets.ViewSet):
 
 class OfferViewSet(viewsets.ViewSet):
     '''
-    A ViewSet for listing offers
+    A ViewSet for listing offers wich aren't past due
     '''
     def list(self, request):
         '''Returns serialized class response from Offer'''

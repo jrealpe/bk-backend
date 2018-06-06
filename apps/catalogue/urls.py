@@ -1,3 +1,6 @@
+'''
+Se define las rutas
+'''
 from django.conf.urls import include, url
 
 from rest_framework import routers

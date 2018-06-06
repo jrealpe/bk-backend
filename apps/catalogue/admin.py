@@ -93,9 +93,8 @@ class PromotionModelAdmin(admin.ModelAdmin):
 class CouponModelAdmin(PromotionModelAdmin):
     '''Registration of the Coupon Model in AdminModel'''
     pass
-    
+
 @admin.register(Offer)
 class OfferModelAdmin(PromotionModelAdmin):
     '''Registration of the Offer Model in AdminModel'''
-
     pass
