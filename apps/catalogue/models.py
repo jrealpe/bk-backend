@@ -6,12 +6,18 @@ from django.db import models
 from core.models import BaseModel
 
 from .validators import date_validator
+from django.core.validators import RegexValidator
+
+
 
 
 class Category(BaseModel):
     '''Category for each Product'''
-    name = models.CharField('Nombre', max_length=30)
-
+    name = models.CharField(max_length=30, validators=[RegexValidator('[a-zA-Z\s]',
+                'Solo letras',
+                'No valido'
+            )])
+	
     class Meta:
         '''Metadata for categories'''
         ordering = ['name']
