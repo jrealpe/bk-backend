@@ -13,7 +13,6 @@ class ProvinceViewSet(viewsets.ModelViewSet):
     '''
     queryset = Province.objects.all()    
     serializer_class = ProvinceSerializer
-    permission_classes = ()
 
 
 class CityViewSet(viewsets.ModelViewSet):
@@ -22,6 +21,5 @@ class CityViewSet(viewsets.ModelViewSet):
     '''
     queryset = City.objects.all()    
     serializer_class = CitySerializer
-    permission_classes = ()
     filter_fields = ('province',)
     ordering = ('name',)
