@@ -1,6 +1,5 @@
 '''
-
-ViewSwts for Catalogue's Offers, Coupons and Products
+ViewSets for Catalogue's Offers, Coupons and Products
 '''
 from rest_framework import viewsets
 from rest_framework.response import Response

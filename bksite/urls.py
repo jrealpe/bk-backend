@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 
+from apps.address import urls as address_urls
 from apps.catalogue import urls as catalogue_urls
 from apps.customer import views as customer_views
 from apps.customer.viewsets import CustomObtainAuthToken
@@ -17,6 +18,7 @@ urlpatterns = [
     url(r'^api/signup/', customer_views.sign_up),
 
     # API
+    url(r'^api/address', include(address_urls)),
     url(r'^api/catalogue', include(catalogue_urls)),
 ]
 
