@@ -3,21 +3,18 @@ Those are models of the application
 '''
 from datetime import datetime
 from django.db import models
-from core.models import BaseModel
 
-from .validators import date_validator
 from django.core.validators import RegexValidator
-
+from core.models import BaseModel
+from .validators import date_validator
 
 
 
 class Category(BaseModel):
     '''Category for each Product'''
-    name = models.CharField(max_length=30, validators=[RegexValidator('[a-zA-Z\s]',
-                'Solo letras',
-                'No valido'
-            )])
-	
+    name = models.CharField(max_length=30,
+                            validators=[RegexValidator('[a-zA-Z\r]', 'Solo letras', 'No valido')])
+
     class Meta:
         '''Metadata for categories'''
         ordering = ['name']
@@ -30,7 +27,8 @@ class Category(BaseModel):
 
 class Product(BaseModel):
     '''Prodcuts'''
-    title = models.CharField('Titulo', max_length=30)
+    title = models.CharField('Titulo', max_length=30,
+                             validators=[RegexValidator('[a-zA-Z\r]', 'Solo letras', 'No valido')])
     description = models.TextField('Descripcion', blank=True, max_length=60)
     category = models.ForeignKey(
         'Category',
@@ -52,7 +50,8 @@ class Promotion(BaseModel):
     '''Abstract Class
     Model of any type of promotion: Coupon or Offter
     '''
-    title = models.CharField('Titulo', max_length=30)
+    title = models.CharField('Titulo', max_length=30,
+                             validators=[RegexValidator('[a-zA-Z\r]', 'Solo letras', 'No valido')])
     description = models.TextField('Descripcion', blank=True, max_length=60)
     date_expiry = models.DateTimeField('Fecha de Expiracion',
                                        validators=[date_validator])
@@ -82,7 +81,6 @@ class Coupon(Promotion):
 
 class Offer(Promotion):
     '''Promotion of combos and 2x1'''
-    
     class Meta:
         '''Metadata for Offer'''
         verbose_name = 'Oferta'
