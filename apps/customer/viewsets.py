@@ -38,7 +38,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
         except:
             response['is_error'] = True
             response['msg'] = 'Usuario y contraseña incorrectos'
-            return Response(response)
+            return Response(response, status=400)
 
         try:
             # Get user
@@ -67,4 +67,4 @@ class CustomObtainAuthToken(ObtainAuthToken):
             response['is_error'] = True
             response['msg'] = 'Ha ocurrido un error, intente nuevamente'
 
-        return Response(response)
+        return Response(response, status= 400 if response['is_error'] else 200)

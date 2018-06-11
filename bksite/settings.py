@@ -170,6 +170,17 @@ REST_FRAMEWORK = {
 }
 
 
+# Test Unit
+
+TEST_USERNAME = 'test'
+TEST_EMAIL = 'test@burgerkingec.com.ec'
+TEST_PASSWORD = 'T3stBurgu3rK1ng'
+
+TEST_DEVICE_NAME = 'Samsung 87'
+TEST_DEVICE_TOKEN = '123jfhh3kj$$211234frwd'
+TEST_DEVICE_TYPE = 'android'
+
+
 # Local Settings
 
 try:
