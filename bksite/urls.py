@@ -4,18 +4,21 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 
+from apps.address import urls as address_urls
 from apps.catalogue import urls as catalogue_urls
+from apps.customer import views as customer_views
+from apps.customer.viewsets import CustomObtainAuthToken
 
-
-from .views import index, SignOutView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    #url(r'^$', index, name='index'),
-    url(r'^incia-sesion/$', index, name='index'),
-    url(r'^cerrar-sesion/$', SignOutView.as_view(), name='sign_out'),
+
+    # Auth
+    url(r'^api/login/', CustomObtainAuthToken.as_view()),
+    url(r'^api/signup/', customer_views.sign_up),
 
     # API
+    url(r'^api/address', include(address_urls)),
     url(r'^api/catalogue', include(catalogue_urls)),
 ]
 

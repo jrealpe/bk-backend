@@ -1,21 +1,27 @@
+'''
+Serializers for Product, Coupon and Offer Models
+'''
 from rest_framework import serializers
-from datetime import date
 
-from apps.catalogue.models import Product, Coupon, Offer
+from apps.catalogue.models import Product, Coupon, Offer, Category
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    """docstring for ProductSerializer"""
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ('id', 'title', 'image',)
 
 
 class CouponSerializer(serializers.ModelSerializer):
+    """docstring for CouponSerializer"""
     class Meta:
         model = Coupon
-        fields = '__all__'
+        fields = ('id', 'title', 'image',)
+
 
 class OfferSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Offer
-		fields = '__all__'
+    """docstring for OfferSerializer"""
+    class Meta:
+        model = Offer
+        fields = ('id', 'title', 'image',)
