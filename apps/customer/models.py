@@ -9,8 +9,6 @@ from core.models import BaseModel
 ########
 
 class User(AbstractUser):
-    identification = models.CharField('Identificación', max_length=13,
-                                      blank=True)
     phone = models.CharField('Teléfono de trabajo', max_length=10,
                              blank=True)
     province = models.ForeignKey(

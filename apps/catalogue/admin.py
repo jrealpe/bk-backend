@@ -43,11 +43,22 @@ class CategoryAdmin(admin.ModelAdmin):
     '''Registration of the Category Model'''
 
     fieldsets = (
-        (None, {'fields': ('name',)}),
+        (None, {'fields': ('name', 'image')}),
     )
-    list_display = ('name', 'modified_user', 'created_user', 'modified_at',
-                    'created_at')
+    list_display = ('name', 'get_image', 'modified_user', 'created_user',
+                    'modified_at', 'created_at')
     search_fields = ('name',)
+
+    def get_image(self, obj):
+        '''Returns the image as thumbnail in the admin'''
+        img = ''
+        if obj.image:
+            thumb = get_thumbnail(obj.image, '80x80')
+            img = '<center><a href={0}><img src="{0}"/></a></center>'\
+                  .format(thumb.url)
+        return img
+    get_image.allow_tags = True
+    get_image.short_description = 'Imagen'
 
     def save_model(self, request, obj, form, change):
         user = request.user

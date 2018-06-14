@@ -13,7 +13,14 @@ from .validators import date_validator
 class Category(BaseModel):
     '''Category for each Product'''
     name = models.CharField(max_length=30,
-                            validators=[RegexValidator('[a-zA-Z\r]', 'Ingrese solo letras', 'No valido')])
+                            validators=[
+                                RegexValidator(
+                                    '[a-zA-Z\r]',
+                                    'Ingrese solo letras',
+                                    'No valido'
+                                )
+                            ])
+    image = models.ImageField('Imagen', upload_to='categories')
 
     class Meta:
         '''Metadata for categories'''
@@ -28,9 +35,21 @@ class Category(BaseModel):
 class Product(BaseModel):
     '''Prodcuts'''
     title = models.CharField('Titulo', max_length=30,
-                             validators=[RegexValidator('[a-zA-Z\r]', 'Ingrese Solo letras', 'No valido')])
-    description = models.TextField('Descripcion', blank=True, max_length=60, 
-                             validators=[RegexValidator("([A-Za-z\r])\w+", 'Ingrese Solo letras y números', 'No valido')])
+                             validators=[
+                                 RegexValidator(
+                                     '[a-zA-Z\r]',
+                                     'Ingrese solo letras',
+                                     'No valido'
+                                 )
+                             ])
+    description = models.TextField('Descripcion', blank=True, max_length=150,
+                                   validators=[
+                                       RegexValidator(
+                                           "([A-Za-z\r])\\w+",
+                                           'Ingrese solo letras y números',
+                                           'No valido'
+                                       )
+                                   ])
     category = models.ForeignKey(
         'Category',
         verbose_name='Categoria',
@@ -52,7 +71,13 @@ class Promotion(BaseModel):
     Model of any type of promotion: Coupon or Offter
     '''
     title = models.CharField('Titulo', max_length=30,
-                             validators=[RegexValidator('[a-zA-Z\r]', 'Ingrese Solo letras', 'No valido')])
+                             validators=[
+                                 RegexValidator(
+                                     '[a-zA-Z\r]',
+                                     'Ingrese solo letras',
+                                     'No valido'
+                                 )
+                             ])
     description = models.TextField('Descripcion', blank=True, max_length=60)
     date_expiry = models.DateTimeField('Fecha de Expiracion',
                                        validators=[date_validator])

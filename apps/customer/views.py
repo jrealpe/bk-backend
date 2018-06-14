@@ -38,7 +38,6 @@ def sign_up(request):
         city = request.data['city']
         sector = request.data['sector']
         phone = request.data['phone']
-        identification = request.data['identification']
 
         # Check for email
         user = User.objects.filter(email=email).first()
@@ -50,7 +49,6 @@ def sign_up(request):
         user = User(username=username, email=email, first_name=first_name, last_name=last_name)
         user.set_password(password)
 
-        user.identification = identification
         user.phone = phone
         user.phone = phone
 
