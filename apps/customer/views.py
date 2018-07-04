@@ -18,7 +18,7 @@ User = get_user_model()
 @permission_classes([])
 def sign_up(request):
     response = {
-        'error':True,
+        'is_error':True,
         'msg':'Parámetros erroneos',
         'data':{}
     }
@@ -62,7 +62,7 @@ def sign_up(request):
         serializer = UserSerializer(user)
         user = serializer.data
 
-        response['error'] = False
+        response['is_error'] = False
         response['msg'] = 'Usuario registrado correctamente'
         response['data'] = user
     except Exception as e:
