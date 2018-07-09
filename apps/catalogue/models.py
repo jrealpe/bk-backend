@@ -15,9 +15,9 @@ class Category(BaseModel):
     name = models.CharField(max_length=30,
                             validators=[
                                 RegexValidator(
-                                    '[a-zA-Z\r]',
+                                    r'^[a-zA-Z ]+$',
                                     'Ingrese solo letras',
-                                    'No valido'
+                                    'invalid_username'
                                 )
                             ])
     image = models.ImageField('Imagen', upload_to='categories')
@@ -37,17 +37,17 @@ class Product(BaseModel):
     title = models.CharField('Titulo', max_length=30,
                              validators=[
                                  RegexValidator(
-                                     '[a-zA-Z\r]',
+                                     r'^[a-zA-Z ]+$',
                                      'Ingrese solo letras',
-                                     'No valido'
+                                     'invalid_username'
                                  )
                              ])
-    description = models.TextField('Descripcion', blank=True, max_length=150,
+    description = models.TextField('Descripcion', max_length=150,
                                    validators=[
                                        RegexValidator(
-                                           "([A-Za-z\r])\\w+",
+                                           r'^[A-Za-z0-9 ]+$',
                                            'Ingrese solo letras y números',
-                                           'No valido'
+                                           'invalid_username'
                                        )
                                    ])
     category = models.ForeignKey(
@@ -73,9 +73,9 @@ class Promotion(BaseModel):
     title = models.CharField('Titulo', max_length=30,
                              validators=[
                                  RegexValidator(
-                                     '[a-zA-Z\r]',
+                                     r'^[a-zA-Z ]+$',
                                      'Ingrese solo letras',
-                                     'No valido'
+                                     'invalid_username'
                                  )
                              ])
     description = models.TextField('Descripcion', blank=True, max_length=60)
