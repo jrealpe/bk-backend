@@ -4,23 +4,20 @@ Those are models of the application
 from datetime import datetime
 from django.db import models
 
-from django.core.validators import RegexValidator
+from django.core.validators import MaxLengthValidator
 from core.models import BaseModel
-from .validators import date_validator
-
+from .validators import date_validator,
+                        title_validator,
+                        description_validator,
+                        image_validator
 
 
 class Category(BaseModel):
     '''Category for each Product'''
-    name = models.CharField(max_length=30,
-                            validators=[
-                                RegexValidator(
-                                    r'^[a-zA-Z ]+$',
-                                    'Ingrese solo letras',
-                                    'invalid_username'
-                                )
-                            ])
-    image = models.ImageField('Imagen', upload_to='categories')
+    name = models.CharField(max_length=30, validators=[title_validator])
+    image = models.ImageField('Imagen',
+                              upload_to='categories',
+                              validators=[image_validator])
 
     class Meta:
         '''Metadata for categories'''
@@ -34,28 +31,23 @@ class Category(BaseModel):
 
 class Product(BaseModel):
     '''Prodcuts'''
-    title = models.CharField('Titulo', max_length=30,
-                             validators=[
-                                 RegexValidator(
-                                     r'^[a-zA-Z ]+$',
-                                     'Ingrese solo letras',
-                                     'invalid_username'
-                                 )
-                             ])
-    description = models.TextField('Descripcion', max_length=150,
+    title = models.CharField('Titulo',
+                             max_length=30,
+                             validators=[title_validator])
+    description = models.TextField('Descripcion',
+                                   max_length=150,
                                    validators=[
-                                       RegexValidator(
-                                           r'^[A-Za-z0-9 ]+$',
-                                           'Ingrese solo letras y números',
-                                           'invalid_username'
-                                       )
+                                       description_validator,
+                                       MaxLengthValidator(150)
                                    ])
     category = models.ForeignKey(
         'Category',
         verbose_name='Categoria',
         on_delete=models.PROTECT,
     )
-    image = models.ImageField('Imagen', upload_to='products')
+    image = models.ImageField('Imagen',
+                              upload_to='products',
+                              validators=[image_validator])
 
     class Meta:
         '''Metadata for Product'''
@@ -70,18 +62,14 @@ class Promotion(BaseModel):
     '''Abstract Class
     Model of any type of promotion: Coupon or Offter
     '''
-    title = models.CharField('Titulo', max_length=30,
-                             validators=[
-                                 RegexValidator(
-                                     r'^[a-zA-Z ]+$',
-                                     'Ingrese solo letras',
-                                     'invalid_username'
-                                 )
-                             ])
+    title = models.CharField('Titulo',
+                             max_length=30,
+                             validators=[title_validator])
     description = models.TextField('Descripcion', blank=True, max_length=60)
     date_expiry = models.DateTimeField('Fecha de Expiracion',
                                        validators=[date_validator])
-    image = models.ImageField('Imagen')
+    image = models.ImageField('Imagen',
+                              image_validator=[image_validator])
 
     class Meta:
         ''''Defined class as abstract'''

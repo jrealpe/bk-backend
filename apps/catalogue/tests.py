@@ -43,6 +43,7 @@ class TestProduct(TestCase):
         # crea un archivo temporal
         # con un nombre visible en el sistema de archivos
         temp_image = tempfile.NamedTemporaryFile()
+        # temp_image = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(temp_image, 'png')
         return temp_image.name
 
@@ -76,6 +77,7 @@ class TestProduct(TestCase):
         self.assertEqual(len(Product.objects.all()), 1)
         # no es la forma correcta para verificar que se ha crado
         # Product.objects.get(title='Papas Fritas') retorna 'Papas Fritas'
+        # self.assertEqual(Product.objects.count(), 1)  # es correcto
 
 
     def test_product_create_cp002(self):
@@ -107,6 +109,7 @@ class TestProduct(TestCase):
         )
         self.assertNotRegex(product.title, r'^[a-zA-Z ]+$')
         # falta verificar error, que no se guardó el producto
+        # with self.assertRaises(ValidationErrors):
 
 
     def test_product_create_cp004(self):
