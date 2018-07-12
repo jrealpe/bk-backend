@@ -6,10 +6,8 @@ from django.db import models
 
 from django.core.validators import MaxLengthValidator
 from core.models import BaseModel
-from .validators import date_validator,
-                        title_validator,
-                        description_validator,
-                        image_validator
+from .validators import date_validator, image_validator
+from .validators import title_validator, description_validator
 
 
 class Category(BaseModel):
@@ -17,6 +15,7 @@ class Category(BaseModel):
     name = models.CharField(max_length=30, validators=[title_validator])
     image = models.ImageField('Imagen',
                               upload_to='categories',
+                              null=False,
                               validators=[image_validator])
 
     class Meta:
@@ -47,6 +46,7 @@ class Product(BaseModel):
     )
     image = models.ImageField('Imagen',
                               upload_to='products',
+                              null=False,
                               validators=[image_validator])
 
     class Meta:
@@ -69,7 +69,8 @@ class Promotion(BaseModel):
     date_expiry = models.DateTimeField('Fecha de Expiracion',
                                        validators=[date_validator])
     image = models.ImageField('Imagen',
-                              image_validator=[image_validator])
+                              null=False,
+                              validators=[image_validator])
 
     class Meta:
         ''''Defined class as abstract'''
