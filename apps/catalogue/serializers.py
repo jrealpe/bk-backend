@@ -10,7 +10,7 @@ class ProductSerializer(serializers.ModelSerializer):
     """docstring for ProductSerializer"""
     class Meta:
         model = Product
-        fields = ('id', 'title', 'image',)
+        fields = ('id', 'title', 'image', 'description',)
 
 
 class CouponSerializer(serializers.ModelSerializer):
