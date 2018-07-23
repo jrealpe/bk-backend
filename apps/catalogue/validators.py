@@ -30,10 +30,12 @@ def description_validator(value):
     '''
     Validar que como descrición ingresen sólo letras y números
     '''
-    regex = re.compile('^[A-Za-z0-9 ]+$')
+    regex = re.compile('^([A-Za-z ]+[0-9#\$%&\*\/\+\-\,\.]{,10})+$')
     if not regex.match(value):
-        raise ValidationError('Contiene carácteres especiales. ' \
-                              + 'Ingrese sólo letras o números')
+        raise ValidationError('Contiene carácteres especiales no permitidos' \
+                              + ' o números/carácters muy largos. '
+                              + 'Ingrese sólo letras, números o ' \
+                              + '# $ % & * / + - , .')
 
 
 def image_validator(value):

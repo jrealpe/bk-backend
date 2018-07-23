@@ -28,6 +28,7 @@ class ProductViewSet(viewsets.ViewSet):
             if serializer_product is not None:
                 queryset_filter['data'] = serializer_product
                 queryset_filter['name'] = category.name
+                queryset_filter['image'] = category.image.url
                 queryset.append(queryset_filter)
                 queryset_filter = {}      # empty dictionary for new data
         return Response(queryset)
