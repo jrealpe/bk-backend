@@ -6,16 +6,28 @@ from django.contrib import admin
 from sorl.thumbnail import get_thumbnail
 
 from .models import Product, Coupon, Category, Offer
+'''
+Me permite devolver un html como respuesta en formato.
+'''
+from django.utils.html import format_html
 
+from django.core.urlresolvers import reverse
 
 @admin.register(Product)
 class ProductModelAdmin(admin.ModelAdmin):
     '''ModelAdmin of Product'''
+
+    def delete_button(self, obj):
+        info = obj._meta.app_label, obj._meta.model_name
+        url = reverse('admin:%s_%s_delete' % info, args=(obj.id,))
+        return format_html('<a href="{}">Eliminar</a>', url)
+
     fieldsets = (
         (None, {'fields': ('title', 'description', 'image', 'category')}),
     )
+    actions = None
     list_display = ('title', 'description', 'get_image', 'modified_user',
-                    'created_user', 'modified_at', 'created_at')
+                    'created_user', 'modified_at', 'created_at', 'delete_button')
     list_filter = ('category',)
     search_fields = ('title',)
 
@@ -41,12 +53,17 @@ class ProductModelAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     '''Registration of the Category Model'''
+    def delete_button(self, obj):
+        info = obj._meta.app_label, obj._meta.model_name
+        url = reverse('admin:%s_%s_delete' % info, args=(obj.id,))
+        return format_html('<a href="{}">Eliminar</a>', url)
 
     fieldsets = (
         (None, {'fields': ('name', 'image')}),
     )
+    actions = None
     list_display = ('name', 'get_image', 'modified_user', 'created_user',
-                    'modified_at', 'created_at')
+                    'modified_at', 'created_at', 'delete_button')
     search_fields = ('name',)
 
     def get_image(self, obj):
@@ -73,11 +90,17 @@ class PromotionModelAdmin(admin.ModelAdmin):
     Promotion Model to be inherit by ModelAdmin of Coupon and Offer
     '''
 
+    def delete_button(self, obj):
+        info = obj._meta.app_label, obj._meta.model_name
+        url = reverse('admin:%s_%s_delete' % info, args=(obj.id,))
+        return format_html('<a href="{}">Eliminar</a>', url)
+
     fieldsets = (
         (None, {'fields': ('title', 'description', 'date_expiry', 'image')}),
     )
+    actions = None
     list_display = ('title', 'description', 'get_image', 'modified_user',
-                    'created_user', 'modified_at', 'created_at')
+                    'created_user', 'modified_at', 'created_at', 'delete_button')
     search_fields = ('title', 'description')
     readonly_fields = ('modified_at', 'created_at')
 

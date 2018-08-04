@@ -12,7 +12,7 @@ from .validators import title_validator, description_validator
 
 class Category(BaseModel):
     '''Category for each Product'''
-    name = models.CharField(max_length=30, validators=[title_validator])
+    name = models.CharField(max_length=30, validators=[title_validator], unique = True)
     image = models.ImageField('Imagen',
                               upload_to='categories',
                               null=False,
