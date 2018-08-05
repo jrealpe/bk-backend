@@ -64,7 +64,7 @@ class Promotion(BaseModel):
     '''
     title = models.CharField('Titulo',
                              max_length=30,
-                             validators=[title_validator])
+                             validators=[description_validator])
     description = models.TextField('Descripcion', blank=True, max_length=60)
     date_expiry = models.DateTimeField('Fecha de Expiracion',
                                        validators=[date_validator])
