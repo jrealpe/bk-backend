@@ -3,6 +3,7 @@ Validaciones del sistema
 '''
 import datetime
 import re
+import os
 from os.path import splitext
 from django.core.exceptions import ValidationError
 
@@ -30,7 +31,7 @@ def description_validator(value):
     '''
     Validar que como descrición ingresen sólo letras y números
     '''
-    regex = re.compile('^([A-Za-z ]+[0-9#\$%&\*\/\+\-\,\.]{,10})+$')
+    regex = re.compile('^([A-ZÁÉÍÓÚa-záéíóú ]+[0-9#\$%&\*\/\+\-\,\.]{,10})+$')
     if not regex.match(value):
         raise ValidationError('Contiene carácteres especiales no permitidos' \
                               + ' o números/carácters muy largos. '
@@ -42,9 +43,9 @@ def image_validator(value):
     '''
     Validar que la imagen sólo acepte jpg jpeg png como formatos de imagen
     '''
-    allowed_extesions = ('jpg', 'jpeg', 'png')
-    ext = splitext(value.name)[1][1:].lower()
+    allowed_extesions = ('.jpg', '.jpeg', '.png')
+    ext = os.path.splitext(value.name)[1].lower()
     if not ext in allowed_extesions:
-        raise ValidationError('Extensión %s no está permitido. ' \
+        raise ValidationError('{} no es un tipo de archivo permitido. ' \
                               + 'Suba una imagen con extensión: ' \
-                              + '.jpeg .jpeg o .png ')
+                              + '.jpeg .jpeg o .png '.format(ext) )

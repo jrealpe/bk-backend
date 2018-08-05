@@ -6,9 +6,10 @@ La imagen creada se guada en el sistema de archivos temporales del S.O.
 '''
 import tempfile
 from PIL import Image
-from django.test import TestCase
-from django.test import override_settings
+from django.conf import settings
+from django.test import TestCase, override_settings
 from django.db.utils import IntegrityError, DataError
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -20,45 +21,36 @@ class TestProduct(TestCase):
     '''
     Pruebas unitarias para Productos del catálogo
 	'''
-
-    def setUp(self):
-        '''
-        Crea un usuario y contraseña para todas las pruebas que lo necesiten
-        '''
-        self.user = USER.objects.create_user(
-            username='admin',
-            password='@dm1n112233'
-        )
+    username = settings.TEST_USERNAME
+    password = settings.TEST_PASSWORD
 
     @override_settings(MEDIA_ROOT=tempfile.gettempdir())
-    def get_image(self):
+    def setUp(self):
         '''
-        Retorna la ruta de una imagen cuadrada y roja que es guardada
+        Crea un usuario y categoria para todas las pruebas que lo necesiten
         El decorador sobrescribe la ruta de MEDIA_ROOT
         por la del directorio de archivos temporales del sistema
         '''
         size = (200, 200)
         color = (255, 0, 0)
         image = Image.new('RGB', size, color)
+        self.ext = 'png'
         # crea un archivo temporal
         # con un nombre visible en el sistema de archivos
-        temp_image = tempfile.NamedTemporaryFile()
-        # temp_image = tempfile.NamedTemporaryFile(suffix='.jpg')
-        image.save(temp_image, 'png')
-        return temp_image.name
-
-
-    def test_category_create_cp(self):
-        '''
-        Pruebas de Ingreso Nueva Categoria exitoso
-        '''
-        category = Category()
-        category.name = 'Dobles'
-        category.image = self.get_image()
-        category.created_user = self.user
-        category.modified_user = self.user
-        category.save()
-        return category
+        self.temp_image = tempfile.NamedTemporaryFile(suffix='.png')
+        image.save(self.temp_image, self.ext)
+        # utiliza usuario y contraseña de prueba
+        self.user = USER.objects.create_user(
+            username = self.username,
+            password = self.password
+        )
+        # nueva categoria
+        self.category = Category.objects.create(
+            name = 'Dobles',
+            image = self.temp_image.name,
+            created_user = self.user,
+            modified_user = self.user
+        )
 
 
     def test_product_create_cp001(self):
@@ -68,16 +60,15 @@ class TestProduct(TestCase):
         product = Product.objects.create(
             title = 'Papas Fritas',
             description = 'Acaramelada',
-            category = self.test_category_create_cp(),
-            image = self.get_image(),
+            category = self.category,
+            image = self.temp_image.name,
             created_user = self.user,
             modified_user = self.user
         )
         print('It Worked!', product.image)
-        self.assertEqual(len(Product.objects.all()), 1)
-        # no es la forma correcta para verificar que se ha crado
-        # Product.objects.get(title='Papas Fritas') retorna 'Papas Fritas'
-        # self.assertEqual(Product.objects.count(), 1)  # es correcto
+        # ValidationError no valida sino se la llama
+        # metodo full_clean() valida cada uno de los campos del formulario
+        self.assertRaises(ValidationError, product.full_clean())
 
 
     def test_product_create_cp002(self):
@@ -88,11 +79,12 @@ class TestProduct(TestCase):
             product = Product.objects.create(
                 title = 'Papas Fritas y algo más de 30 caracteres',
                 description = 'Acaramelada',
-                category = self.test_category_create_cp(),
-                image = self.get_image(),
+                category = self.category,
+                image = self.temp_image.name,
                 created_user = self.user,
                 modified_user = self.user
             )
+            self.assertRaises(ValidationError, product.full_clean())
 
 
     def test_product_create_cp003(self):
@@ -102,14 +94,18 @@ class TestProduct(TestCase):
         product = Product.objects.create(
             title = '1112253652Papas Fritas',
             description = 'Acaramelada',
-            category = self.test_category_create_cp(),
-            image = self.get_image(),
+            category = self.category,
+            image = self.temp_image.name,
             created_user = self.user,
             modified_user = self.user
         )
-        self.assertNotRegex(product.title, r'^[a-zA-Z ]+$')
-        # falta verificar error, que no se guardó el producto
-        # with self.assertRaises(ValidationErrors):
+        with self.assertRaises(ValidationError) as cm:
+            product.full_clean()
+        # compara mensaje de error obtenido y el esperado
+        # message = cm.exception
+        # print(str(message))
+        # self.assertEqual(str(message), 'Contiene números o carácteres especiales. ' \
+        #                 + 'Ingrese sólo letras')
 
 
     def test_product_create_cp004(self):
@@ -121,12 +117,12 @@ class TestProduct(TestCase):
                 title = '1112253652Papas Fritas' \
                 + 'y algo más de 30 caracteres',
                 description = 'Acaramelada',
-                category = self.test_category_create_cp(),
-                image = self.get_image(),
+                category = self.category,
+                image = self.temp_image.name,
                 created_user = self.user,
                 modified_user = self.user
             )
-            self.assertNotRegex(product.title, r'^[a-zA-Z ]+$')
+            self.assertRaises(ValidationError, product.full_clean())
 
 
     def test_product_create_cp005(self):
@@ -139,12 +135,13 @@ class TestProduct(TestCase):
             + 'doble queso y doble jamon mega oferta por los siguientes ' \
             + 'dias de la semana lunes, jueves, domingo aprovecha estos ' \
             + 'dias  tan solo 15 dólares',
-            category = self.test_category_create_cp(),
-            image = self.get_image(),
+            category = self.category,
+            image = self.temp_image.name,
             created_user = self.user,
             modified_user = self.user
         )
-        product.save() # No acepta que hay DataError como en titulo
+        with self.assertRaises(ValidationError):
+            product.full_clean()
 
 
     def test_product_create_cp006(self):
@@ -154,13 +151,13 @@ class TestProduct(TestCase):
         product = Product.objects.create(
             title = 'Papas Fritas',
             description = 'Acaramelada@###~@',
-            category = self.test_category_create_cp(),
-            image = self.get_image(),
+            category = self.category,
+            image = self.temp_image.name,
             created_user = self.user,
             modified_user = self.user
         )
-        self.assertNotRegex(product.description, r'^[A-Za-z0-9 ]+$')
-        # falta verificar error, que no se guardó el producto
+        with self.assertRaises(ValidationError):
+            product.full_clean()
 
 
     def test_product_create_cp007(self):
@@ -173,33 +170,75 @@ class TestProduct(TestCase):
             + 'doble queso y doble jamon mega oferta por los siguientes ' \
             + 'dias de la semana lunes, jueves, domingo aprovecha estos ' \
             + 'dias  tan solo 15 dólares',
-            category = self.test_category_create_cp(),
-            image = self.get_image(),
+            category = self.category,
+            image = self.temp_image.name,
             created_user = self.user,
             modified_user = self.user
         )
-        self.assertNotRegex(product.description, r'^[A-Za-z0-9 ]+$')
-        # falta verificar error, que no se guardó el producto
+        with self.assertRaises(ValidationError):
+            product.full_clean()
+        # self.assertNotRegex(product.description, r'^[A-Za-z0-9 ]+$')
 
 
     def test_product_create_cp008(self):
         '''
-        Pruebas de Ingreso Nuevo Producto exitoso
+        Pruebas de Ingreso Nuevo Producto con formato de imagen no permitido
         '''
         product = Product.objects.create(
             title = 'Papas Fritas',
             description = 'Acaramelada',
-            category = self.test_category_create_cp(),
+            category = self.category,
             image = SimpleUploadedFile(
-                'file.txt',
+                'papas.txt',
                 b'Este es un archivo de prueba!'),
             created_user = self.user,
             modified_user = self.user
         )
-        # falta verificar error, que no se guardó el producto
+        with self.assertRaises(ValidationError):
+            product.full_clean()
 
 
-    def test_product_create_cp024(self):
+    def test_product_create_cp009(self):
+        '''
+        Pruebas de Ingreso Nuevo Producto con formato de imagen no permitido
+        '''
+        with self.assertRaises(DataError):
+            product = Product.objects.create(
+                title = 'Papas Fritas y algo más hasta los treinta',
+                description = 'Acaramelada@###~@ con doble hamburguesas' \
+                + 'doble queso y doble jamon mega oferta por los siguientes ' \
+                + 'dias de la semana lunes, jueves, domingo aprovecha estos ' \
+                + 'dias  tan solo 15 dólares',
+                category = self.category,
+                image = SimpleUploadedFile(
+                    'papas.txt',
+                    b'Este es un archivo de prueba!'),
+                created_user = self.user,
+                modified_user = self.user
+            )
+            with self.assertRaises(ValidationError):
+                product.full_clean()
+
+
+    def test_product_create_cp0010(self):
+        '''
+        Pruebas de Ingreso Nuevo Producto con formato de imagen no permitido
+        '''
+        product = Product.objects.create(
+            title = '1112253652Papas Fritas',
+            description = 'Acaramelada@###~@',
+            category = self.category,
+            image = SimpleUploadedFile(
+                'papas.txt',
+                b'Este es un archivo de prueba!'),
+            created_user = self.user,
+            modified_user = self.user
+        )
+        with self.assertRaises(ValidationError):
+            product.full_clean()
+
+
+    def test_product_create_cp011(self):
         '''
         Prueba que no se puede crear un Product sin description
         '''
@@ -207,14 +246,14 @@ class TestProduct(TestCase):
             product = Product.objects.create(
                 title='Hamburguesas dobles',
                 description = None,
-                category=self.test_category_create_cp(),
-                image=self.get_image(),
+                category=self.category,
+                image=self.temp_image.name,
                 created_user=self.user,
                 modified_user=self.user
             )
 
 
-    def test_product_create_cp025(self):
+    def test_product_create_cp012(self):
         '''
         Prueba que no se puede crear un Product sin title
         '''
@@ -222,14 +261,14 @@ class TestProduct(TestCase):
             product = Product.objects.create(
                 title = None,
                 description = 'Hamburguesas en promocion',
-                category = self.test_category_create_cp(),
-                image = self.get_image(),
+                category = self.category,
+                image = self.temp_image.name,
                 created_user = self.user,
                 modified_user = self.user
             )
 
 
-    def test_product_create_cp026(self):
+    def test_product_create_cp013(self):
         '''
         Prueba que no se puede crear un Product sin image
         '''
@@ -237,14 +276,14 @@ class TestProduct(TestCase):
             product = Product.objects.create(
                 title = 'Papas Fritas',
                 description = 'Acaramelada',
-                category = self.test_category_create_cp(),
+                category = self.category,
                 image = None,
                 created_user = self.user,
                 modified_user = self.user
            )
 
 
-    def test_product_create_cp027(self):
+    def test_product_create_cp014(self):
         '''
         Prueba que no se puede crear un Product sin category
         '''
@@ -252,14 +291,14 @@ class TestProduct(TestCase):
             product = Product.objects.create(
                 title = 'Papas Fritas',
                 description = 'Acaramelada',
-                image = self.get_image(),
+                image = self.temp_image.name,
                 category = None,
                 created_user = self.user,
                 modified_user = self.user
             )
 
 
-    def test_product_create_cp028(self):
+    def test_product_create_cp015(self):
         '''
         Prueba que no se puede crear un Product sin description ni category
         '''
@@ -268,13 +307,13 @@ class TestProduct(TestCase):
                 title = 'Papas Fritas',
                 description = None,
                 category = None,
-                image = self.get_image(),
+                image = self.temp_image.name,
                 created_user = self.user,
                 modified_user = self.user
             )
 
 
-    def test_product_create_cp029(self):
+    def test_product_create_cp016(self):
         '''
         Prueba que no se puede crear un Product con sólo el campo title
         '''
@@ -289,7 +328,7 @@ class TestProduct(TestCase):
             )
 
 
-    def test_product_create_cp030(self):
+    def test_product_create_cp017(self):
         '''
         Prueba que no se puede crear un Product con sólo el campo description
         '''
@@ -304,7 +343,7 @@ class TestProduct(TestCase):
             )
 
 
-    def test_product_create_cp031(self):
+    def test_product_create_cp018(self):
         '''
         Prueba que no se puede crear un Product con sólo el campo image
         '''
@@ -312,14 +351,14 @@ class TestProduct(TestCase):
             product = Product.objects.create(
                 title = None,
                 description = None,
-                image = self.get_image(),
+                image = self.temp_image.name,
                 category = None,
                 created_user = self.user,
                 modified_user = self.user
             )
 
 
-    def test_product_create_cp032(self):
+    def test_product_create_cp019(self):
         '''
         Prueba que no se puede crear un Product con sólo el campo category
         '''
@@ -328,13 +367,13 @@ class TestProduct(TestCase):
                 title = None,
                 description = None,
                 image = None, 
-                category = self.test_category_create_cp(),
+                category = self.category,
                 created_user = self.user,
                 modified_user = self.user
             )
 
 
-    def test_product_create_cp033(self):
+    def test_product_create_cp020(self):
         '''
         Prueba que no se puede crear un Product con category y title
         '''
@@ -343,13 +382,13 @@ class TestProduct(TestCase):
                 title = 'Hamburguesas dobles',
                 description = None,
                 image = None,
-                category = self.test_category_create_cp(),
+                category = self.category,
                 created_user = self.user,
                 modified_user = self.user
             )
 
 
-    def test_product_create_cp034(self):
+    def test_product_create_cp021(self):
         '''
         Prueba que no se puede crear un Product con category e image
         '''
@@ -357,14 +396,14 @@ class TestProduct(TestCase):
             Product.objects.create(
                 title = None,
                 description = None,
-                category = self.test_category_create_cp(),
-                image = self.get_image(),
+                category = self.category,
+                image = self.temp_image.name,
                 created_user = self.user,
                 modified_user = self.user
             )
 
 
-    def test_product_create_cp35(self):
+    def test_product_create_cp22(self):
         '''
         Prueba que no se puede crear un Product con campos vacíos
         '''
