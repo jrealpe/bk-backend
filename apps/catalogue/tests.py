@@ -102,10 +102,10 @@ class TestProduct(TestCase):
         with self.assertRaises(ValidationError) as cm:
             product.full_clean()
         # compara mensaje de error obtenido y el esperado
-        # message = cm.exception
-        # print(str(message))
-        # self.assertEqual(str(message), 'Contiene números o carácteres especiales. ' \
-        #                 + 'Ingrese sólo letras')
+        exception = cm.exception
+        message = exception.message_dict['title'][0]
+        self.assertEqual(message, 'Contiene números o carácteres especiales. '
+                                  'Ingrese sólo letras')
 
 
     def test_product_create_cp004(self):
@@ -272,15 +272,15 @@ class TestProduct(TestCase):
         '''
         Prueba que no se puede crear un Product sin image
         '''
-        with self.assertRaises(IntegrityError):
-            product = Product.objects.create(
-                title = 'Papas Fritas',
-                description = 'Acaramelada',
-                category = self.category,
-                image = None,
-                created_user = self.user,
-                modified_user = self.user
-           )
+        #with self.assertRaises(IntegrityError):
+        product = Product.objects.create(
+            title = 'Papas Fritas',
+            description = 'Acaramelada',
+            category = self.category,
+            image = None,
+            created_user = self.user,
+            modified_user = self.user
+        )
 
 
     def test_product_create_cp014(self):
