@@ -181,6 +181,25 @@ TEST_DEVICE_TOKEN = '123jfhh3kj$$211234frwd'
 TEST_DEVICE_TYPE = 'android'
 
 
+# Travis
+
+if 'TRAVIS' in os.environ:
+		SECRET_KEY = os.environ['TRAVIS_KEY']
+		DEBUG = True
+		ALLOWED_HOSTS = ['*']
+
+    DATABASES = {
+        'default': {
+            'ENGINE':   'django.db.backends.postgresql_psycopg2',
+						'NAME':     os.environ['DATABASE_NAME'],
+    				'USER':     os.environ['DATABASE_USER'],
+    				'PASSWORD': os.environ['DATABASE_PASSWORD'],
+            'HOST':     'localhost',
+            'PORT':     '',
+        }
+    }
+
+
 # Local Settings
 
 try:
