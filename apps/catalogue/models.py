@@ -46,7 +46,6 @@ class Product(BaseModel):
     )
     image = models.ImageField('Imagen',
                               upload_to='products',
-                              null=False,
                               validators=[image_validator])
 
     class Meta:
