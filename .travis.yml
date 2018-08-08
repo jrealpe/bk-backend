@@ -6,11 +6,11 @@ python:
 services: postgresql
 
 env:
-  - TRAVIS=True
-  - TRAVIS_KEY='aa6nu-#zjeq()8/*4pefo=%6e7_^m6vyc@93ze-se!ib-$k43%n'
-  - DATABASE_NAME='travisci'
-  - DATABASE_USER='postgres'
-  - DATABASE_PASSWORD=''
+  global:
+    - TRAVIS_KEY='aa6nu-#zjeq()8/*4pefo=%6e7_^m6vyc@93ze-se!ib-$k43%n'
+    - DATABASE_NAME='travisci'
+    - DATABASE_USER='postgres'
+    - DATABASE_PASSWORD=''
 
 before_script:
   - psql -c "CREATE DATABASE travisci;" -U postgres

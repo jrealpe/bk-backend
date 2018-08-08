@@ -184,16 +184,16 @@ TEST_DEVICE_TYPE = 'android'
 # Travis
 
 if 'TRAVIS' in os.environ:
-		SECRET_KEY = os.environ['TRAVIS_KEY']
-		DEBUG = True
-		ALLOWED_HOSTS = ['*']
+    SECRET_KEY = os.environ['TRAVIS_KEY']
+    DEBUG = True
+    ALLOWED_HOSTS = ['*']
 
     DATABASES = {
         'default': {
             'ENGINE':   'django.db.backends.postgresql_psycopg2',
-						'NAME':     os.environ['DATABASE_NAME'],
-    				'USER':     os.environ['DATABASE_USER'],
-    				'PASSWORD': os.environ['DATABASE_PASSWORD'],
+            'NAME':     os.environ['DATABASE_NAME'],
+            'USER':     os.environ['DATABASE_USER'],
+            'PASSWORD': os.environ['DATABASE_PASSWORD'],
             'HOST':     'localhost',
             'PORT':     '',
         }
