@@ -46,6 +46,7 @@ def image_validator(value):
     allowed_extesions = ('.jpg', '.jpeg', '.png')
     ext = os.path.splitext(value.name)[1].lower()
     if not ext in allowed_extesions:
-        raise ValidationError('{} no es un tipo de archivo permitido. ' \
-                              + 'Suba una imagen con extensión: ' \
-                              + '.jpeg .jpeg o .png '.format(ext) )
+        raise ValidationError( ext + 
+                              ' no es una extensión de archivo permitida. '
+                              'Suba una imagen con extensión: '
+                              '.jpeg .jpeg o .png')
