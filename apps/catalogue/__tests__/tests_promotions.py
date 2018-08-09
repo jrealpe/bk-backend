@@ -257,10 +257,8 @@ class TestPromotion(TestCase):
         # compara mensaje de error obtenido y el esperado
         exception = error.exception
         message = exception.message_dict['date_expiry'][0]
-        print(message)
-        # self.assertEqual(message_3, '.txt no es una extensión de archivo '
-        #                             'permitida. Suba una imagen con '
-        #                             'extensión: .jpeg .jpeg o .png')
+        self.assertEqual(message, 'Seleccione una fecha y hora '
+                                  'posterior a la actual')
 
 
     def test_offer_create_cp0043(self):
@@ -282,11 +280,14 @@ class TestPromotion(TestCase):
         # compara mensaje de error obtenido y el esperado
         exception = error.exception
         message_1 = exception.message_dict['title'][0]
+        message_2 = exception.message_dict['date_expiry'][0]
         message_3 = exception.message_dict['image'][1]
         self.assertEqual(message_1, 'Contiene carácteres especiales no '
                                     'permitidos o números/carácters muy '
                                     'largos. Ingrese sólo letras, números '
                                     'o # $ % & * / + - , .')
+        self.assertEqual(message_2, 'Seleccione una fecha y hora '
+                                  'posterior a la actual')
         self.assertEqual(message_3, '.txt no es una extensión de archivo '
                                     'permitida. Suba una imagen con '
                                     'extensión: .jpeg .jpeg o .png')
