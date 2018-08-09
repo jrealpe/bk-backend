@@ -18,3 +18,4 @@ before_script:
 script:
   - python manage.py migrate
   - python manage.py test
+  - python manage.py test apps/catalogue/__tests__
