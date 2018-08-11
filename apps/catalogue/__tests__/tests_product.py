@@ -65,11 +65,20 @@ class TestProduct(TestCase):
             modified_user=self.user
         )
         print('It Worked!', product.image)
+        # Checkea el fallo de confirmar que existe algun error de validacion
+        with self.assertRaises(AssertionError):
+            # Se debe invocar a ValidationError para errores de este tipo
+            # Asignados desde las funciones de Validación al Modelo Product
+            with self.assertRaises(ValidationError):
+                # Para validar a cada campo del formulario de Producto
+                product.full_clean()
 
 
     def test_product_create_cp002(self):
         '''
         Pruebas de Ingreso Nuevo Producto con título mayor a 30 caracteres
+        Cuando de desborda el tamaño restringido en un campo de texto
+        La DB devuelve DataError
         '''
         with self.assertRaises(DataError):
             product = Product.objects.create(
@@ -95,6 +104,8 @@ class TestProduct(TestCase):
             created_user=self.user,
             modified_user=self.user
         )
+        # Se debe invocar a ValidationError para errores de este tipo
+        # Asignados desde las funciones de Validación al Modelo de Productos
         with self.assertRaises(ValidationError) as error:
             product.full_clean()
         # compara mensaje de error obtenido y el esperado
@@ -110,8 +121,8 @@ class TestProduct(TestCase):
         '''
         with self.assertRaises(DataError):
             product = Product.objects.create(
-                title='1112253652Papas Fritas' \
-                + 'y algo más de 30 caracteres',
+                title='1112253652Papas Fritas'
+                      'y algo más de 30 caracteres',
                 description='Acaramelada',
                 category=self.category,
                 image=self.temp_image.name,
@@ -127,10 +138,10 @@ class TestProduct(TestCase):
         '''
         product = Product.objects.create(
             title='Papas Fritas',
-            description='Acaramelada con doble hamburguesas don ' \
-            + 'doble queso y doble jamon mega oferta por los siguientes ' \
-            + 'dias de la semana lunes, jueves, domingo aprovecha estos ' \
-            + 'dias  tan solo 15 dólares',
+            description='Acaramelada con doble hamburguesas'
+                        'doble queso y doble jamon mega oferta por los '
+                        'siguientes dias de la semana lunes, jueves, '
+                        'domingo aprovecha estos dias  tan solo $15',
             category=self.category,
             image=self.temp_image.name,
             created_user=self.user,
@@ -142,7 +153,7 @@ class TestProduct(TestCase):
         exception = error.exception
         message = exception.message_dict['description'][0]
         self.assertEqual(message, 'Asegúrese de que este valor tenga menos '
-                                  'de 150 caracteres (tiene 178).')
+                                  'de 150 caracteres (tiene 166).')
 
 
     def test_product_create_cp006(self):
@@ -165,7 +176,7 @@ class TestProduct(TestCase):
         self.assertEqual(message, 'Contiene carácteres especiales no '
                                   'permitidos o números/carácters muy '
                                   'largos. Ingrese sólo letras, números '
-                                  'o # $ % & * / + - , .')
+                                  'o # $ % & * / + - ¿ ? ! ¡ , .')
 
 
     def test_product_create_cp007(self):
@@ -174,10 +185,10 @@ class TestProduct(TestCase):
         '''
         product = Product.objects.create(
             title='Papas Fritas',
-            description='Acaramelada@###~@ con doble hamburguesas' \
-            + 'doble queso y doble jamon mega oferta por los siguientes ' \
-            + 'dias de la semana lunes, jueves, domingo aprovecha estos ' \
-            + 'dias  tan solo 15 dólares',
+            description='Acaramelada@###~@ con doble hamburguesas'
+                        'doble queso y doble jamon mega oferta por los '
+                        'siguientes dias de la semana lunes, jueves, '
+                        'domingo aprovecha estos dias  tan solo $15',
             category=self.category,
             image=self.temp_image.name,
             created_user=self.user,
@@ -192,9 +203,9 @@ class TestProduct(TestCase):
         self.assertEqual(message_1, 'Contiene carácteres especiales no '
                                     'permitidos o números/carácters muy '
                                     'largos. Ingrese sólo letras, números '
-                                    'o # $ % & * / + - , .')
+                                    'o # $ % & * / + - ¿ ? ! ¡ , .')
         self.assertEqual(message_2, 'Asegúrese de que este valor tenga menos '
-                                    'de 150 caracteres (tiene 179).')
+                                    'de 150 caracteres (tiene 172).')
 
 
     def test_product_create_cp008(self):
@@ -228,10 +239,10 @@ class TestProduct(TestCase):
         with self.assertRaises(DataError):
             product = Product.objects.create(
                 title='Papas Fritas y algo más hasta los treinta',
-                description='Acaramelada@###~@ con doble hamburguesas' \
-                + 'doble queso y doble jamon mega oferta por los siguientes ' \
-                + 'dias de la semana lunes, jueves, domingo aprovecha estos ' \
-                + 'dias  tan solo 15 dólares',
+                description='Acaramelada@###~@ con doble hamburguesas'
+                            'doble queso y doble jamon mega oferta por los '
+                            'siguientes dias de la semana lunes, jueves, '
+                            'domingo aprovecha estos dias  tan solo $15',
                 category=self.category,
                 image=SimpleUploadedFile(
                     'papas.txt',
@@ -268,7 +279,7 @@ class TestProduct(TestCase):
         self.assertEqual(message_2, 'Contiene carácteres especiales no '
                                     'permitidos o números/carácters muy '
                                     'largos. Ingrese sólo letras, números '
-                                    'o # $ % & * / + - , .')
+                                    'o # $ % & * / + - ¿ ? ! ¡ , .')
         self.assertEqual(message_3, '.txt no es una extensión de archivo '
                                     'permitida. Suba una imagen con '
                                     'extensión: .jpeg .jpeg o .png')
@@ -277,6 +288,7 @@ class TestProduct(TestCase):
     def test_product_create_cp011(self):
         '''
         Prueba que no se puede crear un Product sin description
+        Cuando hay campos nulos la DB devuelve IntegrityError
         '''
         with self.assertRaises(IntegrityError):
             Product.objects.create(
