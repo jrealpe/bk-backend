@@ -56,11 +56,20 @@ class TestCategory(TestCase):
             modified_user=self.user
         )
         print('It Worked!', category.image)
+        # Checkea el fallo de confirmar que existe algun error de validacion
+        with self.assertRaises(AssertionError):
+            # Se debe invocar a ValidationError para errores de este tipo
+            # Asignados desde las funciones de Validación al Modelo Categoy
+            with self.assertRaises(ValidationError):
+                # Para validar a cada campo del formulario de Categorias
+                category.full_clean()
 
 
     def test_category_create_cp024(self):
         '''
         Pruebas de Ingreso Nuevo Categoría con título mayor a 30 caracteres
+        Cuando de desborda el tamaño restringido en un campo de texto
+        La DB devuelve DataError
         '''
         with self.assertRaises(DataError):
             category = Category.objects.create(
@@ -83,11 +92,13 @@ class TestCategory(TestCase):
             created_user=self.user,
             modified_user=self.user
         )
+        # Se debe invocar a ValidationError para errores de este tipo
+        # Asignados desde las funciones de Validación al Modelo de Categorias
         with self.assertRaises(ValidationError) as error:
             category.full_clean()
-        # compara mensaje de error obtenido y el esperado
         exception = error.exception
         message = exception.message_dict['name'][0]
+        # compara mensaje de error obtenido y el esperado
         self.assertEqual(message, 'Contiene números o carácteres especiales. '
                                   'Ingrese sólo letras')
 
@@ -157,6 +168,7 @@ class TestCategory(TestCase):
     def test_category_create_cp029(self):
         '''
         Prueba que no se puede crear Category sin title
+        Cuando hay campos nulos la DB devuelve IntegrityError
         '''
         with self.assertRaises(IntegrityError):
             Category.objects.create(

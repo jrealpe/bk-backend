@@ -27,7 +27,7 @@ class TestPromotion(TestCase):
     @override_settings(MEDIA_ROOT=tempfile.gettempdir())
     def setUp(self):
         '''
-        Crea un usuario y categoria para todas las pruebas que lo necesiten
+        Crea un usuario para todas las pruebas que lo necesiten
         El decorador sobrescribe la ruta de MEDIA_ROOT
         por la del directorio de archivos temporales del sistema
         '''
@@ -35,7 +35,7 @@ class TestPromotion(TestCase):
         color = (255, 0, 0)
         image = Image.new('RGB', size, color)
         self.ext = 'png'
-        # crea un archivo temporal
+        # crea un archivo temporal .png
         # con un nombre visible en el sistema de archivos
         self.temp_image = tempfile.NamedTemporaryFile(suffix='.png')
         image.save(self.temp_image, self.ext)
@@ -59,11 +59,20 @@ class TestPromotion(TestCase):
             modified_user=self.user
         )
         print('It Worked!', coupon.image)
+        # Checkea el fallo de confirmar que existe algun error de validacion
+        with self.assertRaises(AssertionError):
+            # Se debe invocar a ValidationError para errores de este tipo
+            # Asignados desde las funciones de Validación al Modelo Coupon
+            with self.assertRaises(ValidationError):
+                # Para validar a cada campo del formulario de Cupon
+                coupon.full_clean()
 
 
     def test_offer_create_cp033(self):
         '''
         Pruebas de Ingreso Nuevä Oferta con título mayor a 30 caracteres
+        Cuando de desborda el tamaño restringido en un campo de texto
+        La DB devuelve DataError
         '''
         with self.assertRaises(DataError):
             offer = Offer.objects.create(
@@ -82,27 +91,32 @@ class TestPromotion(TestCase):
         Pruebas de Ingreso Nuevo Cupón con título de números
         '''
         coupon = Coupon.objects.create(
-            title='···//?¿¿Ç^Papas Fritas',
+            title='Papas Fritas^1',
             description='Acaramelada',
             date_expiry=datetime.datetime(2020, 10, 1),
             image=self.temp_image.name,
             created_user=self.user,
             modified_user=self.user
         )
+        # Se debe invocar a ValidationError para errores de este tipo
+        # Asignados desde las funciones de Validación al Modelo de Categorias
         with self.assertRaises(ValidationError) as error:
+            # Para validar a cada campo del formulario Cupón
             coupon.full_clean()
-        # compara mensaje de error obtenido y el esperado
         exception = error.exception
         message = exception.message_dict['title'][0]
+        # compara mensaje de error obtenido y el esperado
         self.assertEqual(message, 'Contiene carácteres especiales no '
                                   'permitidos o números/carácters muy '
                                   'largos. Ingrese sólo letras, números '
-                                  'o # $ % & * / + - , .')
+                                  'o # $ % & * / + - ¿ ? ! ¡ , .')
 
 
     def test_offer_create_cp035(self):
         '''
         Pruebas de Ingreso Nueva Oferta con título más 30 caracteres números
+        Cuando de desborda el tamaño restringido en un campo de texto
+        La DB devuelve DataError
         '''
         with self.assertRaises(DataError):
             offer = Offer.objects.create(
@@ -122,16 +136,22 @@ class TestPromotion(TestCase):
         Pruebas de Ingreso Nuevo Cupón con descripción más de 60 caracteres
         '''
         coupon = Coupon.objects.create(
-            title='Papas Fritas',
-            description='Acaramelada con doble hamburguesas don ' \
-            + 'doble queso y doble jamon mega oferta por los siguientes ' \
-            + 'dias de la semana lunes, jueves, domingo aprovecha estos ' \
-            + 'dias  tan solo 15 dólares',
+            title='Sandwich de pollo picante',
+            description='Papas Fritas con Sandwich de pollo crujiente '
+                        'picante hecho con pollo jugoso, tierno y crujiente '
+                        '100% de carne blanca.',
             date_expiry=datetime.datetime(2020, 10, 1),
             image=self.temp_image.name,
             created_user=self.user,
             modified_user=self.user
         )
+        with self.assertRaises(ValidationError) as error:
+            coupon.full_clean()
+        # compara mensaje de error obtenido y el esperado
+        exception = error.exception
+        message = exception.message_dict['description'][0]
+        self.assertEqual(message, 'Asegúrese de que este valor tenga menos '
+                                  'de 60 caracteres (tiene 117).')
 
 
     def test_offer_create_cp0037(self):
@@ -139,13 +159,23 @@ class TestPromotion(TestCase):
         Pruebas de Ingreso Nueva Oferta con descripción no alfanumérica
         '''
         offer = Offer.objects.create(
-            title='Papas Fritas',
-            description='Acaramelada@###~@',
+            title='Sandwich de pollo picante',
+            description='Acaramelada #@1',
             date_expiry=datetime.datetime(2020, 10, 1),
             image=self.temp_image.name,
             created_user=self.user,
             modified_user=self.user
         )
+        with self.assertRaises(ValidationError) as error:
+            # Para validar a cada campo del formulario Oferta
+            offer.full_clean()
+        # compara mensaje de error obtenido y el esperado
+        exception = error.exception
+        message = exception.message_dict['description'][0]
+        self.assertEqual(message, 'Contiene carácteres especiales no '
+                                  'permitidos o números/carácters muy '
+                                  'largos. Ingrese sólo letras, números '
+                                  'o # $ % & * / + - ¿ ? ! ¡ , .')
 
 
     def test_coupon_create_cp038(self):
@@ -153,16 +183,27 @@ class TestPromotion(TestCase):
         Pruebas de Ingreso Nuevo Cupon descripción no alfanumérica mas de 60
         '''
         coupon = Coupon.objects.create(
-            title='Papas Fritas',
-            description='Acaramelada@###~@ con doble hamburguesas' \
-            + 'doble queso y doble jamon mega oferta por los siguientes ' \
-            + 'dias de la semana lunes, jueves, domingo aprovecha estos ' \
-            + 'dias  tan solo 15 dólares',
+            title='Sandwich de pollo picante',
+            description='Papas Fritas@ con Sandwich de pollo crujiente '
+                        'picante hecho con pollo jugoso, tierno y crujiente '
+                        '100% de carne blanca.',
             date_expiry=datetime.datetime(2020, 10, 1),
             image=self.temp_image.name,
             created_user=self.user,
             modified_user=self.user
         )
+        with self.assertRaises(ValidationError) as error:
+            coupon.full_clean()
+        # compara mensaje de error obtenido y el esperado
+        exception = error.exception
+        message_1 = exception.message_dict['description'][0]
+        message_2 = exception.message_dict['description'][1]
+        self.assertEqual(message_1, 'Contiene carácteres especiales no '
+                                    'permitidos o números/carácters muy '
+                                    'largos. Ingrese sólo letras, números '
+                                    'o # $ % & * / + - ¿ ? ! ¡ , .')
+        self.assertEqual(message_2, 'Asegúrese de que este valor tenga menos '
+                                    'de 60 caracteres (tiene 118).')
 
 
     def test_offer_create_cp039(self):
@@ -174,7 +215,7 @@ class TestPromotion(TestCase):
             description='Acaramelada',
             date_expiry=datetime.datetime(2020, 10, 1),
             image=SimpleUploadedFile(
-                'papas.txt',
+                'papas.raw',
                 b'Este es un archivo de prueba!'),
             created_user=self.user,
             modified_user=self.user
@@ -184,7 +225,7 @@ class TestPromotion(TestCase):
         # compara mensaje de error obtenido y el esperado
         exception = error.exception
         message = exception.message_dict['image'][1]
-        self.assertEqual(message, '.txt no es una extensión de archivo '
+        self.assertEqual(message, '.raw no es una extensión de archivo '
                                   'permitida. Suba una imagen con extensión: '
                                   '.jpeg .jpeg o .png')
 
@@ -197,13 +238,12 @@ class TestPromotion(TestCase):
         with self.assertRaises(DataError):
             coupon = Coupon.objects.create(
                 title='Papas Fritas y algo más hasta los treinta',
-                description='Acaramelada@###~@ con doble hamburguesas' \
-                + 'doble queso y doble jamon mega oferta por los siguientes ' \
-                + 'dias de la semana lunes, jueves, domingo aprovecha estos ' \
-                + 'dias  tan solo 15 dólares',
+                description='Papas Fritas con Sandwich de pollo crujiente '
+                            'picante hecho con pollo jugoso, tierno y crujiente '
+                            '100% de carne blanca.',
                 date_expiry=datetime.datetime(2020, 10, 1),
                 image=SimpleUploadedFile(
-                    'papas.txt',
+                    'papas.raw',
                     b'Este es un archivo de prueba!'),
                 created_user=self.user,
                 modified_user=self.user
@@ -220,7 +260,7 @@ class TestPromotion(TestCase):
             description='Acaramelada@###~@',
             date_expiry=datetime.datetime(2020, 10, 1),
             image=SimpleUploadedFile(
-                'papas.txt',
+                'papas.csv',
                 b'Este es un archivo de prueba!'),
             created_user=self.user,
             modified_user=self.user
@@ -230,12 +270,17 @@ class TestPromotion(TestCase):
         # compara mensaje de error obtenido y el esperado
         exception = error.exception
         message_1 = exception.message_dict['title'][0]
+        message_2 = exception.message_dict['description'][0]
         message_3 = exception.message_dict['image'][1]
         self.assertEqual(message_1, 'Contiene carácteres especiales no '
                                     'permitidos o números/carácters muy '
                                     'largos. Ingrese sólo letras, números '
-                                    'o # $ % & * / + - , .')
-        self.assertEqual(message_3, '.txt no es una extensión de archivo '
+                                    'o # $ % & * / + - ¿ ? ! ¡ , .')
+        self.assertEqual(message_2, 'Contiene carácteres especiales no '
+                                    'permitidos o números/carácters muy '
+                                    'largos. Ingrese sólo letras, números '
+                                    'o # $ % & * / + - ¿ ? ! ¡ , .')
+        self.assertEqual(message_3, '.csv no es una extensión de archivo '
                                     'permitida. Suba una imagen con '
                                     'extensión: .jpeg .jpeg o .png')
 
@@ -285,9 +330,9 @@ class TestPromotion(TestCase):
         self.assertEqual(message_1, 'Contiene carácteres especiales no '
                                     'permitidos o números/carácters muy '
                                     'largos. Ingrese sólo letras, números '
-                                    'o # $ % & * / + - , .')
+                                    'o # $ % & * / + - ¿ ? ! ¡ , .')
         self.assertEqual(message_2, 'Seleccione una fecha y hora '
-                                  'posterior a la actual')
+                                    'posterior a la actual')
         self.assertEqual(message_3, '.txt no es una extensión de archivo '
                                     'permitida. Suba una imagen con '
                                     'extensión: .jpeg .jpeg o .png')
@@ -296,6 +341,7 @@ class TestPromotion(TestCase):
     def test_coupon_create_cp044(self):
         '''
         Prueba que sí se puede crear un Cupon sin description
+        Cuando hay campos nulos la DB devuelve IntegrityError
         '''
         with self.assertRaises(IntegrityError):
             Coupon.objects.create(
