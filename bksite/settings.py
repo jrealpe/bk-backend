@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'sorl.thumbnail',
+    'import_export',
 
     # Core and Utils
     'core',

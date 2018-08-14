@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 
 from apps.address import urls as address_urls
 from apps.catalogue import urls as catalogue_urls
+from apps.analytics import urls as analytics_urls
 from apps.customer import views as customer_views
 from apps.customer.viewsets import CustomObtainAuthToken
 
@@ -20,6 +21,7 @@ urlpatterns = [
     # API
     url(r'^api/address', include(address_urls)),
     url(r'^api/catalogue', include(catalogue_urls)),
+    url(r'^api/analytics/', include(analytics_urls)),
 ]
 
 if settings.DEBUG:
