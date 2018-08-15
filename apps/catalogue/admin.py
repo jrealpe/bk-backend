@@ -1,11 +1,17 @@
 '''
 To Manage the forms for produc, cotegory and promotion models.
 '''
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from sorl.thumbnail import get_thumbnail
 
 from .models import Product, Coupon, Category, Offer
+
+
+User = get_user_model()
 
 
 @admin.register(Product)
@@ -80,6 +86,7 @@ class PromotionModelAdmin(admin.ModelAdmin):
                     'created_user', 'modified_at', 'created_at')
     search_fields = ('title', 'description')
     readonly_fields = ('modified_at', 'created_at')
+    actions = ['enviar_email',]
 
     def get_image(self, obj):
         '''Returns the image as thumbnail in the admin'''
@@ -98,6 +105,24 @@ class PromotionModelAdmin(admin.ModelAdmin):
             obj.created_user = user
         obj.modified_user = user
         super().save_model(request, obj, form, change)
+
+    def enviar_email(self, request, queryset):
+        if not queryset:
+            messages.error(request, 'Error, se debe seleccionar uno o mas promociones')
+        else:
+            rendered = render_to_string('promotion/responsive.html', { 'promotion': queryset })
+            receivers = User.objects\
+                            .filter(is_active=True)\
+                            .exclude(email='', is_staff=False)\
+                            .values_list('email', flat=True)
+            print(receivers)
+            if receivers:
+                send_mail('Nuevas Promociones', '', 'marketing@burgerking.com', 
+                          receivers, html_message=rendered)
+
+            messages.success(request, 'Se ha enviado el correo electrónico correctamente')
+    send_mail.short_description='Enviar Correo Electrónico'
+    send_mail.allow_tags = True
 
 
 @admin.register(Coupon)
