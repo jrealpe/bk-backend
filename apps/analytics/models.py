@@ -31,7 +31,7 @@ class ProductRecord(models.Model):
 
     product = models.OneToOneField(
         'catalogue.Product', verbose_name='Producto',
-        related_name='stats', on_delete=models.PROTECT)
+        related_name='stats', on_delete=models.CASCADE)
 
     # Data used for generating a score
     num_views = models.PositiveIntegerField('Visualizaciones', default=0)
@@ -74,7 +74,7 @@ class CouponRecord(models.Model):
 
     coupon = models.OneToOneField(
         'catalogue.Coupon', verbose_name='Cupón',
-        related_name='stats', on_delete=models.PROTECT)
+        related_name='stats', on_delete=models.CASCADE)
 
     # Data used for generating a score
     num_views = models.PositiveIntegerField('Visualizaciones', default=0)
@@ -117,7 +117,7 @@ class OfferRecord(models.Model):
 
     offer = models.OneToOneField(
         'catalogue.Offer', verbose_name='Oferta',
-        related_name='stats', on_delete=models.PROTECT)
+        related_name='stats', on_delete=models.CASCADE)
 
     # Data used for generating a score
     num_views = models.PositiveIntegerField('Visualizaciones', default=0)
